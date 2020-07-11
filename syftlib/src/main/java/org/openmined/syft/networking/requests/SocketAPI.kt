@@ -9,7 +9,7 @@ import org.openmined.syft.networking.datamodels.webRTC.JoinRoomResponse
 /**
  * Represent WebRTC connection API
  * */
-internal interface SocketAPI : CommunicationAPI {
+interface SocketAPI : CommunicationAPI {
 
     /**
      * Request joining a federated learning cycle

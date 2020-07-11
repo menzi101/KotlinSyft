@@ -20,11 +20,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
     }
-
-    kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8.toString()
-    }
-
     dataBinding {
         enabled true
     }
@@ -52,6 +47,10 @@ dependencies {
     implementation DemoAppDependencies.mpAndroidChart
     implementation DemoAppDependencies.materialAndroid
     implementation DemoAppDependencies.kotlinJDK
+
+    implementation DemoAppDependencies.mpAndroidChart
+    implementation DemoAppDependencies.materialAndroid
+    implementation DemoAppDependencies.kotlinJDK
     implementation DemoAppDependencies.workKtx
     implementation DemoAppDependencies.workGCM
     implementation DemoAppDependencies.workRX
@@ -66,7 +65,6 @@ dependencies {
     implementation SyftlibDependencies.pytorchAndroid
     implementation SyftlibDependencies.torchVisionAndroid
 
-    androidTestImplementation DemoAppDependencies.workTest
     androidTestImplementation CommonDependencies.adxExtJunit
     androidTestImplementation CommonDependencies.espresso
 }

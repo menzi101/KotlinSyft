@@ -4,10 +4,10 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import org.openmined.syft.networking.datamodels.NetworkModels
 
-internal const val WEBRTC_INTERNAL_TYPE = "webrtc_internal"
+const val WEBRTC_INTERNAL_TYPE = "webrtc_internal"
 
 @Serializable
-internal data class InternalMessageResponse(
+data class InternalMessageResponse(
     val type: String,
     @SerialName("worker_id")
     val newWorkerId: String,
@@ -16,7 +16,7 @@ internal data class InternalMessageResponse(
 ) : NetworkModels()
 
 @Serializable
-internal data class InternalMessageRequest(
+data class InternalMessageRequest(
     @SerialName("worker_id")
     val workerId: String,
     @SerialName("scope_id")

@@ -2,7 +2,7 @@ package org.openmined.syft.monitor.network
 
 import io.reactivex.Maybe
 
-internal class NetworkStatusCache(private val cacheTimeOut: Long) {
+class NetworkStatusCache(private val cacheTimeOut: Long) {
 
     var networkStateCache = NetworkStatusModel()
     fun getNetworkStatusCache(): Maybe<NetworkStatusModel> {
@@ -21,7 +21,7 @@ internal class NetworkStatusCache(private val cacheTimeOut: Long) {
                 System.currentTimeMillis() - networkStateCache.cacheTimeStamp < cacheTimeOut
         val fieldValidity = (networkStateCache.downloadSpeed != null)
                             && (networkStateCache.ping != null)
-                            && (networkStateCache.uploadSpeed != null)
+                            && (networkStateCache.uploadspeed != null)
         return cacheTimeValidity and fieldValidity and networkStateCache.networkValidity
     }
 

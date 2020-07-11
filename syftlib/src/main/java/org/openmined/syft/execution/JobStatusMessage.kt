@@ -5,7 +5,7 @@ import org.openmined.syft.proto.SyftModel
 import java.util.concurrent.ConcurrentHashMap
 
 @ExperimentalUnsignedTypes
-internal sealed class JobStatusMessage {
+sealed class JobStatusMessage {
     class JobCycleRejected(val timeout: String) : JobStatusMessage()
 
     class JobReady(

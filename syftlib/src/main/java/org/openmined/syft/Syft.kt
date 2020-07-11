@@ -1,6 +1,5 @@
 package org.openmined.syft
 
-import org.openmined.syft.fp.Either
 import android.accounts.NetworkErrorException
 import android.util.Log
 import io.reactivex.Single
@@ -44,6 +43,12 @@ class Syft internal constructor(
         * @return the instance of Syft worker provided no JWT authentication Token Error.
         * @throws ExceptionInInitializerError if the previous worker is not disposed off or Auth error occurs.
         */
+    private val authToken: String?
+    ) : Disposable {
+    companion object {
+        @Volatile
+        private var INSTANCE: Syft? = null
+
         fun getInstance(
             syftConfiguration: SyftConfiguration,
             authToken: String? = null
@@ -53,10 +58,9 @@ class Syft internal constructor(
                     if (it.syftConfig == syftConfiguration && it.authToken == authToken) it
                     else throw ExceptionInInitializerError("syft worker initialised with different parameters. Dispose previous worker")
                 } ?: Syft(
-                    syftConfig = syftConfiguration,
-                    deviceMonitor = DeviceMonitor.construct(syftConfiguration),
-                    authToken = authToken,
-                    isSpeedTestEnable = true
+                    syftConfiguration,
+                    DeviceMonitor.construct(syftConfiguration),
+                    authToken
                 ).also { INSTANCE = it }
             }
         }
@@ -96,6 +100,10 @@ class Syft internal constructor(
                 workerJobs.remove(job.jobId)
             }
             // method that throws the error message should issues arise and removes the current job
+            override fun onComplete() {
+                workerJobs.remove(job.jobId)
+            }
+
             override fun onError(throwable: Throwable) {
                 Log.e(TAG, throwable.message.toString())
                 workerJobs.remove(job.jobId)
@@ -124,13 +132,24 @@ class Syft internal constructor(
         workerId?.let { id ->
             compositeDisposable.add(
                 deviceMonitor.getNetworkStatus(id, isRequiresSpeedTestEnabled)
+    internal fun getSyftWorkerId() = workerId
+
+    internal fun executeCycleRequest(job: SyftJob) {
+        if (jobErrorIfBatteryInvalid(job) ||
+            jobErrorIfNetworkInvalid(job)
+        )
+            return
+
+        workerId?.let { id ->
+            compositeDisposable.add(
+                deviceMonitor.getNetworkStatus(id)
                         .flatMap { networkState ->
                             requestCycle(
                                 id,
                                 job,
                                 networkState.ping,
                                 networkState.downloadSpeed,
-                                networkState.uploadSpeed
+                                networkState.uploadspeed
                             )
                         }
                         .compose(syftConfig.networkingSchedulers.applySingleSchedulers())
@@ -157,6 +176,9 @@ class Syft internal constructor(
     * method to dispose of a Syft Worker.
     * Once a worker is disposed off, all the jobs that are running are disposed as well.
     */
+
+    override fun isDisposed() = isDisposed.get()
+
     override fun dispose() {
         Log.d(TAG, "disposing syft worker")
         deviceMonitor.dispose()
@@ -170,6 +192,7 @@ class Syft internal constructor(
     * @throws IllegalStateException should Network issues arise to job status subscriber.
     * @return true if error is thrown else returns false.
     */
+
     internal fun jobErrorIfNetworkInvalid(job: SyftJob): Boolean {
         if (!deviceMonitor.isNetworkStateValid()) {
             job.throwError(IllegalStateException("network constraints failed"))
@@ -188,6 +211,38 @@ class Syft internal constructor(
         if (!deviceMonitor.isBatteryStateValid()) {
             job.throwError(IllegalStateException("Battery constraints failed"))
             return true
+
+    internal fun jobErrorIfBatteryInvalid(job: SyftJob): Boolean {
+        if (!deviceMonitor.isBatteryStateValid()) {
+            job.throwError(IllegalStateException("Battery constraints failed"))
+            return true
+        }
+        return false
+    }
+
+    private fun requestCycle(
+        id: String,
+        job: SyftJob,
+        ping: String?,
+        downloadSpeed: String?,
+        uploadSpeed: String?
+    ): Single<CycleResponseData> {
+        return when {
+            ping == null ->
+                Single.error(NetworkErrorException("unable to get ping"))
+            downloadSpeed == null ->
+                Single.error(NetworkErrorException("unable to verify download speed"))
+            uploadSpeed == null ->
+                Single.error(NetworkErrorException("unable to verify upload speed"))
+            else -> syftConfig.getSignallingClient().getCycle(
+                CycleRequest(
+                    id, job.jobId.modelName,
+                    job.jobId.version,
+                    ping,
+                    downloadSpeed,
+                    uploadSpeed
+                )
+            )
         }
         return false
     }
@@ -279,22 +334,21 @@ class Syft internal constructor(
     * method to execute Authentication of the Syft Worker Job
     * @throws IllegalStateException if Worker id is not initialized.
     */
+
     private fun executeAuthentication(job: SyftJob) {
         compositeDisposable.add(
             syftConfig.getSignallingClient().authenticate(AuthenticationRequest(authToken))
                     .compose(syftConfig.networkingSchedulers.applySingleSchedulers())
-                    .subscribe({ response: AuthenticationResponse ->
-                        when (response) {
+                    .subscribe({ t: AuthenticationResponse ->
+                        when (t) {
                             is AuthenticationResponse.AuthenticationSuccess -> {
-                                if (workerId == null) {
-                                    setSyftWorkerId(response.workerId)
-                                    requiresSpeedTest = response.requiresSpeedTest
-                                }
+                                if (workerId == null)
+                                    setSyftWorkerId(t.workerId)
                                 executeCycleRequest(job)
                             }
                             is AuthenticationResponse.AuthenticationError -> {
-                                job.throwError(SecurityException(response.errorMessage))
-                                Log.d(TAG, response.errorMessage)
+                                job.throwError(SecurityException(t.errorMessage))
+                                Log.d(TAG, t.errorMessage)
                             }
                         }
                     }, {
@@ -317,6 +371,7 @@ class Syft internal constructor(
     /**
     * method to dispoe of the open RTC client
     */
+
     private fun disposeSocketClient() {
         syftConfig.getWebRTCSignallingClient().dispose()
     }

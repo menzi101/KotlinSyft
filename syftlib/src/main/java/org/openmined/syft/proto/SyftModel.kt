@@ -1,7 +1,6 @@
 package org.openmined.syft.proto
 
 import android.util.Log
-import org.pytorch.IValue
 import org.pytorch.Tensor
 
 private const val TAG = "SyftModel"
@@ -38,10 +37,8 @@ data class SyftModel(
      * This method is used to save/update SyftModel class.
      * This function must be called after every gradient step to update the model state for further plan executions.
      * @throws IllegalArgumentException if the size newModelParams is not correct.
-     * @param newModelParams a list of PyTorch Tensor that would be converted to syftTensor
-     * ```kotlin
-     * model.updateModel(updatedParams.map { it.toTensor() })
-     * ```
+     * @param newModelParams a list of pytorch Tensor that would be converted to syftTensor
+     * @sample model.updateModel(updatedParams.map { it.toTensor() })
      */
     fun updateModel(newModelParams: List<Tensor>) {
         modelSyftState?.let { state ->
@@ -53,11 +50,6 @@ data class SyftModel(
             }
         }
     }
-
-    /**
-     * @return The array of [IValue][https://pytorch.org/javadoc/org/pytorch/IValue.html] of model weights. This can be fed directly to the [org.openmined.syft.execution.Plan.execute]
-     */
-    fun getParamsIValueArray() = modelSyftState?.getIValueTensorArray()
 
     /**
      * This method is used to load SyftModel from file

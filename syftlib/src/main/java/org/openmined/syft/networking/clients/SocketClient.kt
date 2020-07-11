@@ -39,7 +39,7 @@ private const val TAG = "SocketClient"
  * @property schedulers Manage multi-threading operations
  * */
 @ExperimentalUnsignedTypes
-internal class SocketClient(
+class SocketClient(
     private val syftWebSocket: SyftWebSocket,
     private val timeout: UInt = 20000u,
     private val schedulers: ProcessSchedulers

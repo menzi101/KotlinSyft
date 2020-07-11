@@ -12,11 +12,10 @@ import java.util.concurrent.atomic.AtomicBoolean
 private const val TAG = "device monitor"
 
 @ExperimentalUnsignedTypes
-internal class DeviceMonitor(
+class DeviceMonitor(
     private val networkStatusRepository: NetworkStatusRepository,
     private val batteryStatusRepository: BatteryStatusRepository,
-    private val processSchedulers: ProcessSchedulers,
-    private val subscribe: Boolean
+    private val processSchedulers: ProcessSchedulers
 ) : Disposable {
 
     companion object {
@@ -26,8 +25,7 @@ internal class DeviceMonitor(
             return DeviceMonitor(
                 NetworkStatusRepository.initialize(syftConfig),
                 BatteryStatusRepository.initialize(syftConfig),
-                syftConfig.networkingSchedulers,
-                syftConfig.monitorDevice
+                syftConfig.networkingSchedulers
             )
         }
     }
@@ -42,8 +40,7 @@ internal class DeviceMonitor(
     private val compositeDisposable = CompositeDisposable()
 
     init {
-        if (subscribe)
-            subscribe()
+        subscribe()
     }
 
     fun isNetworkStateValid(): Boolean {
@@ -64,8 +61,7 @@ internal class DeviceMonitor(
         return userValidity.get()
     }
 
-    fun getNetworkStatus(workerId: String, requiresSpeedTest: Boolean) =
-            networkStatusRepository.getNetworkStatus(workerId, requiresSpeedTest)
+    fun getNetworkStatus(workerId: String) = networkStatusRepository.getNetworkStatus(workerId)
     fun getBatteryStatus() = batteryStatusRepository.getBatteryState()
 
     private fun subscribe() {
@@ -100,13 +96,11 @@ internal class DeviceMonitor(
     override fun dispose() {
         compositeDisposable.clear()
         if (!isDisposed()) {
-            if (subscribe) {
-                networkStatusRepository.unsubscribeStateChange()
-                batteryStatusRepository.unsubscribeStateChange()
-            }
+            networkStatusRepository.unsubscribeStateChange()
+            batteryStatusRepository.unsubscribeStateChange()
             isDisposed.set(true)
             Log.d(TAG, "disposed device monitor")
         } else
-            Log.d(TAG, "device monitor already disposed")
+            Log.d(TAG,"device monitor already disposed")
     }
 }

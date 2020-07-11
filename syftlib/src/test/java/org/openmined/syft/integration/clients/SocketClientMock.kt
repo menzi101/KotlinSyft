@@ -23,7 +23,7 @@ import org.robolectric.annotation.Implements
 
 @ExperimentalUnsignedTypes
 @Implements(SocketClient::class)
-internal class SocketClientMock(
+class SocketClientMock(
     private val authenticateSuccess: Boolean,
     private val cycleSuccess: Boolean
 ) {

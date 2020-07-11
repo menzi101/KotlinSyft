@@ -12,7 +12,7 @@ import org.openmined.syft.monitor.BroadCastListener
 import org.openmined.syft.monitor.StateChangeMessage
 
 @ExperimentalUnsignedTypes
-internal class BatteryStatusDataSource(
+class BatteryStatusDataSource(
     private val context: Context,
     private val batteryCheckEnabled: Boolean, // this may eventually have a list of battery constraints
     private val statusProcessor: PublishProcessor<StateChangeMessage> = PublishProcessor.create()

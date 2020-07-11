@@ -30,7 +30,7 @@ private const val MAX_SPEED_TESTING_BYTES = MB * 8
 private const val TAG = "NetworkStateEvaluator"
 
 @ExperimentalUnsignedTypes
-internal class NetworkStatusRealTimeDataSource internal constructor(
+class NetworkStatusRealTimeDataSource internal constructor(
     private val downloader: HttpAPI,
     private val filesDir: File,
     private val networkRequest: NetworkRequest,
@@ -127,8 +127,8 @@ internal class NetworkStatusRealTimeDataSource internal constructor(
                         if (speed > 100000)
                         //capping infinity
                             speed = 100000.0f
-                        networkStatusModel.uploadSpeed = speed.toString()
-                        Log.d(TAG, "Upload Speed is ${networkStatusModel.uploadSpeed} KBps")
+                        networkStatusModel.uploadspeed = speed.toString()
+                        Log.d(TAG, "Upload Speed is ${networkStatusModel.uploadspeed} KBps")
                         file.delete()
                         Completable.complete()
 

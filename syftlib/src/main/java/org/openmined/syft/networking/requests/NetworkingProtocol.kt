@@ -1,6 +1,6 @@
 package org.openmined.syft.networking.requests
 
-internal sealed class NetworkingProtocol {
+sealed class NetworkingProtocol {
     object WSS : NetworkingProtocol() {
         override fun toString(): String {
             return "ws"

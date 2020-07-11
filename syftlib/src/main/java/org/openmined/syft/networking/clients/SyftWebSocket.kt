@@ -12,8 +12,8 @@ import org.openmined.syft.networking.requests.NetworkingProtocol
 import java.util.concurrent.TimeUnit
 
 // Used in serializing data to be passed over the network
-internal const val TYPE = "type"
-internal const val DATA = "data"
+const val TYPE = "type"
+const val DATA = "data"
 // Code used to close web socket connection
 private const val SOCKET_CLOSE_CLIENT = 1000
 
@@ -24,7 +24,7 @@ private const val SOCKET_CLOSE_CLIENT = 1000
  * @param keepAliveTimeout Timeout period
  * */
 @ExperimentalUnsignedTypes
-internal class SyftWebSocket(
+class SyftWebSocket(
     protocol: NetworkingProtocol,
     address: String,
     keepAliveTimeout: UInt

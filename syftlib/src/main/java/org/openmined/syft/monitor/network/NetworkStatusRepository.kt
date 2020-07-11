@@ -10,7 +10,7 @@ private const val TAG = "NetworkStateRepository"
 
 
 @ExperimentalUnsignedTypes
-internal class NetworkStatusRepository (
+class NetworkStatusRepository internal constructor(
     private val networkConstraints: List<Int>,
     private val cacheService: NetworkStatusCache,
     private val realTimeDataService: NetworkStatusRealTimeDataSource
@@ -31,13 +31,9 @@ internal class NetworkStatusRepository (
         }
     }
 
-    fun getNetworkStatus(workerId: String, requiresSpeedTest: Boolean): Single<NetworkStatusModel> {
-        return if (requiresSpeedTest) {
-            cacheService.getNetworkStatusCache()
-                    .switchIfEmpty(getNetworkStatusUncached(workerId))
-        } else {
-            Single.just(NetworkStatusModel("", "", ""))
-        }
+    fun getNetworkStatus(workerId: String): Single<NetworkStatusModel> {
+        return cacheService.getNetworkStatusCache()
+                .switchIfEmpty(getNetworkStatusUncached(workerId))
     }
 
     fun getNetworkValidity() = realTimeDataService.getNetworkValidity(networkConstraints)
@@ -52,7 +48,6 @@ internal class NetworkStatusRepository (
 
     private fun getNetworkStatusUncached(workerId: String): Single<NetworkStatusModel> {
         val networkStatus = NetworkStatusModel()
-        // TODO Must ping be excluded if requiresSpeedTest is false?
         return realTimeDataService.updatePing(workerId, networkStatus)
                 .andThen(realTimeDataService.updateDownloadSpeed(workerId, networkStatus))
                 .andThen(realTimeDataService.updateUploadSpeed(workerId, networkStatus))

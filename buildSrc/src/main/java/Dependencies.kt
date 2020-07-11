@@ -13,32 +13,28 @@ object Versions {
     const val buildTools = "29.0.2"
 
     // Android libraries
-    const val appCompat = "1.1.0-alpha04"
+    const val appCompat = "1.1.0"
     const val constraintLayout = "1.1.3"
     const val coreKtx = "1.2.0"
     const val kotlinSerialization = "0.14.0"
     const val material="1.1.0"
-    const val workManagerVersion = "2.3.4"
-    const val lifecycleVersion = "2.2.0"
     // Tools
     const val rxJava = "2.2.12"
     const val rxAndroid = "2.1.1"
     const val webrtc = "1.0.30039"
     const val okhttp = "4.3.1"
     const val protobuf = "3.11.4"
-    const val syftProto = "0.4.1"
+    const val syftProto = "0.4.1-legacy-jdk"
     const val retrofit = "2.7.1"
     const val kotlinConverter = "0.4.0"
     const val pytorchAndroid = "1.5.0"
     const val mpAndroidChart = "v3.1.0"
-    const val coroutines = "1.3.7"
 
     // release management
     const val netflixPublishing = "14.0.0"
     const val netflixRelease = "13.0.0"
     const val netflixBintray = "3.5.4"
     const val jacocoVersion = "0.8.2"
-    const val dokkaVersion = "0.10.1"
 
     // Test
     const val extJunit = "1.1.1"
@@ -59,11 +55,13 @@ object ProjectDependencies {
     const val androidGradlePlugin = "com.android.tools.build:gradle:${Versions.gradle}"
     const val kotlinGradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}"
     const val kotlinSerialization = "org.jetbrains.kotlin:kotlin-serialization:${Versions.kotlin}"
-    const val netflixPublishingPlugin = "com.netflix.nebula:nebula-publishing-plugin:${Versions.netflixPublishing}"
-    const val netflixReleasePlugin = "com.netflix.nebula:nebula-release-plugin:${Versions.netflixRelease}"
-    const val netflixBintrayPlugin = "com.netflix.nebula:nebula-bintray-plugin:${Versions.netflixBintray}"
-    const val jacoco = "org.jacoco:org.jacoco.core:${Versions.jacocoVersion}"
-    const val dokka = "org.jetbrains.dokka:dokka-gradle-plugin:${Versions.dokkaVersion}"
+    const val netflixPublishingPlugin = "com.netflix.nebula:nebula-publishing-plugin:" +
+                                        Versions.netflixPublishing
+    const val netflixReleasePlugin = "com.netflix.nebula:nebula-release-plugin:" +
+                                     Versions.netflixRelease
+    const val netflixBintrayPlugin = "com.netflix.nebula:nebula-bintray-plugin:" +
+                                     Versions.netflixBintray
+    const val jacoco = "org.jacoco:org.jacoco.core:" + Versions.jacocoVersion
 }
 
 object CommonDependencies {
@@ -91,15 +89,6 @@ object DemoAppDependencies {
     const val kotlinJDK = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:${Versions.kotlin}"
     const val materialAndroid = "com.google.android.material:material:${Versions.material}"
     const val mpAndroidChart = "com.github.PhilJay:MPAndroidChart:${Versions.mpAndroidChart}"
-    const val coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-core:${Versions.coroutines}"
-    const val lifecycle = "androidx.lifecycle:lifecycle-livedata-ktx:${Versions.lifecycleVersion}"
-    const val lifeCycleProcess = "androidx.lifecycle:lifecycle-process:${Versions.lifecycleVersion}"
-
-    const val workKtx = "androidx.work:work-runtime-ktx:${Versions.workManagerVersion}"
-    const val workRX = "androidx.work:work-rxjava2:${Versions.workManagerVersion}"
-    const val workGCM = "androidx.work:work-gcm:${Versions.workManagerVersion}"
-
-    const val workTest = "androidx.work:work-testing:${Versions.workManagerVersion}"
 }
 
 object SyftlibDependencies {

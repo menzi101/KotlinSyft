@@ -36,14 +36,13 @@ class AuthenticationTest : AbstractSyftWorkerTest() {
             computeSchedulers,
             context.filesDir,
             true,
-            batteryCheckEnabled = true,
-            networkConstraints = networkConstraints,
-            transportMedium = NetworkCapabilities.TRANSPORT_WIFI,
-            cacheTimeOut = 0,
-            maxConcurrentJobs = 1,
-            socketClient = socketClient.getMockedClient(),
-            httpClient = httpClient.getMockedClient(),
-            messagingClient = SyftConfiguration.NetworkingClients.SOCKET
+            networkConstraints,
+            NetworkCapabilities.TRANSPORT_WIFI,
+            0,
+            1,
+            socketClient.getMockedClient(),
+            httpClient.getMockedClient(),
+            SyftConfiguration.NetworkingClients.SOCKET
         )
 
         val syftWorker = Syft.getInstance(syftConfiguration, "test token")
@@ -73,14 +72,13 @@ class AuthenticationTest : AbstractSyftWorkerTest() {
             computeSchedulers,
             context.filesDir,
             true,
-            batteryCheckEnabled = true,
-            networkConstraints = networkConstraints,
-            transportMedium = NetworkCapabilities.TRANSPORT_WIFI,
-            cacheTimeOut = 0,
-            maxConcurrentJobs = 1,
-            socketClient = socketClient.getMockedClient(),
-            httpClient = httpClient.getMockedClient(),
-            messagingClient = SyftConfiguration.NetworkingClients.SOCKET
+            networkConstraints,
+            NetworkCapabilities.TRANSPORT_WIFI,
+            0,
+            1,
+            socketClient.getMockedClient(),
+            httpClient.getMockedClient(),
+            SyftConfiguration.NetworkingClients.SOCKET
         )
 
         val syftWorker = Syft.getInstance(syftConfiguration)
@@ -110,14 +108,13 @@ class AuthenticationTest : AbstractSyftWorkerTest() {
             computeSchedulers,
             context.filesDir,
             true,
-            batteryCheckEnabled = true,
-            networkConstraints = networkConstraints,
-            transportMedium = NetworkCapabilities.TRANSPORT_WIFI,
-            cacheTimeOut = 0,
-            maxConcurrentJobs = 1,
-            socketClient = socketClient.getMockedClient(),
-            httpClient = httpClient.getMockedClient(),
-            messagingClient = SyftConfiguration.NetworkingClients.SOCKET
+            networkConstraints,
+            NetworkCapabilities.TRANSPORT_WIFI,
+            0,
+            1,
+            socketClient.getMockedClient(),
+            httpClient.getMockedClient(),
+            SyftConfiguration.NetworkingClients.SOCKET
         )
 
         val syftWorker = Syft.getInstance(syftConfiguration)
@@ -149,14 +146,13 @@ class AuthenticationTest : AbstractSyftWorkerTest() {
             computeSchedulers,
             context.filesDir,
             true,
-            batteryCheckEnabled = true,
-            networkConstraints = networkConstraints,
-            transportMedium = NetworkCapabilities.TRANSPORT_WIFI,
-            cacheTimeOut = 0,
-            maxConcurrentJobs = 1,
-            socketClient = socketClient.getMockedClient(),
-            httpClient = httpClient.getMockedClient(),
-            messagingClient = SyftConfiguration.NetworkingClients.SOCKET
+            networkConstraints,
+            NetworkCapabilities.TRANSPORT_WIFI,
+            0,
+            1,
+            socketClient.getMockedClient(),
+            httpClient.getMockedClient(),
+            SyftConfiguration.NetworkingClients.SOCKET
         )
 
         val syftWorker = Syft.getInstance(syftConfiguration)

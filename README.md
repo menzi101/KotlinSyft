@@ -79,34 +79,14 @@ You can use KotlinSyft as a front-end or as a background service. The following 
             // eventually you would be able to use plan name here 
             val plan = plans["plan id"]
 
-            repeat(clientConfig.properties.maxUpdates) { step ->
-
-                // get relevant hyperparams from ClientConfig.planArgs
-                // All the planArgs will be string and it is upon the user to deserialize them into correct type
-                val batchSize = (clientConfig.planArgs["batch_size"]
-                                 ?: error("batch_size doesn't exist")).toInt()
-                val batchIValue = IValue.from(
-                    Tensor.fromBlob(longArrayOf(batchSize.toLong()), longArrayOf(1))
-                )
-                val lr = IValue.from(
-                    Tensor.fromBlob(
-                        floatArrayOf(
-                            (clientConfig.planArgs["lr"] ?: error("lr doesn't exist")).toFloat()
-                        ),
-                        longArrayOf(1)
-                    )
-                )
+            repeat(clientConfig.maxUpdates) { step ->
                 // your custom implementation to read a databatch from your data
                 val batchData = dataRepository.loadDataBatch(clientConfig.batchSize)
-                //get Model weights and return if not set already
-                val modelParams = model.getParamsIValueArray() ?: return
                 // plan.execute runs a single gradient step and returns the output as PyTorch IValue
                 val output = plan.execute(
-                    batchData.first,
-                    batchData.second,
-                    batchIValue,
-                    lr,
-                    *modelParams
+                    model,
+                    batchData,
+                    clientConfig
                 )?.toTuple()
                 // The output is a tuple with outputs defined by the pysyft plan along with all the model params
                 output?.let { outputResult ->
@@ -125,10 +105,6 @@ You can use KotlinSyft as a front-end or as a background service. The following 
                 // Failing to return from onReady will crash the application.
                 // All error handling must be done with `onError` Listener
             }
-            // Once training finishes generate the model diff
-            val diff = mnistJob.createDiff()
-            // Report the diff to PyGrid and finish the cycle
-            mnistJob.report(diff)
         }
 
         override fun onRejected(timeout: String) {
@@ -211,12 +187,12 @@ These people were integral part of the efforts to bring KotlinSyft to fruition a
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="http://vkkhare.github.io"><img src="https://avatars1.githubusercontent.com/u/18126069?v=4" width="100px;" alt=""/><br /><sub><b>varun khare</b></sub></a><br /><a href="https://github.com/OpenMined/KotlinSyft/commits?author=vkkhare" title="Code">💻</a> <a href="https://github.com/OpenMined/KotlinSyft/commits?author=vkkhare" title="Tests">⚠️</a> <a href="https://github.com/OpenMined/KotlinSyft/commits?author=vkkhare" title="Documentation">📖</a> <a href="#design-vkkhare" title="Design">🎨</a></td>
-    <td align="center"><a href="https://github.com/mccorby"><img src="https://avatars2.githubusercontent.com/u/4661075?v=4" width="100px;" alt=""/><br /><sub><b>Jose A. Corbacho</b></sub></a><br /><a href="https://github.com/OpenMined/KotlinSyft/commits?author=mccorby" title="Code">💻</a> <a href="https://github.com/OpenMined/KotlinSyft/commits?author=mccorby" title="Tests">⚠️</a> <a href="#design-mccorby" title="Design">🎨</a> <a href="https://github.com/OpenMined/KotlinSyft/commits?author=mccorby" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://vkkhare.github.io"><img src="https://avatars1.githubusercontent.com/u/18126069?v=4" width="100px;" alt=""/><br /><sub><b>varun khare</b></sub></a><br /><a href="https://github.com/OpenMined/KotlinSyft/commits?author=vkkhare" title="Code">💻</a> <a href="https://github.com/OpenMined/KotlinSyft/commits?author=vkkhare" title="Tests">⚠️</a> <a href="https://github.com/OpenMined/KotlinSyft/commits?author=vkkhare" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/mccorby"><img src="https://avatars2.githubusercontent.com/u/4661075?v=4" width="100px;" alt=""/><br /><sub><b>Jose A. Corbacho</b></sub></a><br /><a href="https://github.com/OpenMined/KotlinSyft/commits?author=mccorby" title="Code">💻</a> <a href="https://github.com/OpenMined/KotlinSyft/commits?author=mccorby" title="Tests">⚠️</a></td>
     <td align="center"><a href="http://ravikantsingh.com"><img src="https://avatars3.githubusercontent.com/u/40258150?v=4" width="100px;" alt=""/><br /><sub><b>Ravikant Singh</b></sub></a><br /><a href="https://github.com/OpenMined/KotlinSyft/commits?author=IamRavikantSingh" title="Code">💻</a> <a href="https://github.com/OpenMined/KotlinSyft/commits?author=IamRavikantSingh" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/codeboy5"><img src="https://avatars0.githubusercontent.com/u/40931412?v=4" width="100px;" alt=""/><br /><sub><b>Saksham Rastogi</b></sub></a><br /><a href="https://github.com/OpenMined/KotlinSyft/commits?author=codeboy5" title="Documentation">📖</a></td>
     <td align="center"><a href="https://www.patrickcason.com"><img src="https://avatars1.githubusercontent.com/u/1297930?v=4" width="100px;" alt=""/><br /><sub><b>Patrick Cason</b></sub></a><br /><a href="https://github.com/OpenMined/KotlinSyft/commits?author=cereallarceny" title="Documentation">📖</a> <a href="#business-cereallarceny" title="Business development">💼</a></td>
-    <td align="center"><a href="http://galalen.github.io"><img src="https://avatars0.githubusercontent.com/u/16897043?v=4" width="100px;" alt=""/><br /><sub><b>Mohammed Galalen</b></sub></a><br /><a href="https://github.com/OpenMined/KotlinSyft/commits?author=galalen" title="Documentation">📖</a> <a href="https://github.com/OpenMined/KotlinSyft/commits?author=galalen" title="Tests">⚠️</a></td>
+    <td align="center"><a href="http://galalen.github.io"><img src="https://avatars0.githubusercontent.com/u/16897043?v=4" width="100px;" alt=""/><br /><sub><b>Mohammed Galalen</b></sub></a><br /><a href="https://github.com/OpenMined/KotlinSyft/commits?author=galalen" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/erksch"><img src="https://avatars2.githubusercontent.com/u/19290349?v=4" width="100px;" alt=""/><br /><sub><b>Erik Ziegler</b></sub></a><br /><a href="https://github.com/OpenMined/KotlinSyft/issues?q=author%3Aerksch" title="Bug reports">🐛</a></td>
   </tr>
 </table>

@@ -89,7 +89,7 @@ class SyftJob internal constructor(
 
     /**
      * Starts the job by asking syft worker to request for cycle.
-     * Initialises Socket connection if not initialised already.
+     * Sets up [Socket Client][org.openmined.syft.networking.clients.SocketClient] if not initialised already.
      * @param subscriber (Optional) Contains the methods overridden by the user to be called upon job success/error
      * @see org.openmined.syft.execution.JobStatusSubscriber for available methods
      *
@@ -250,7 +250,7 @@ class SyftJob internal constructor(
     /**
      * Throw an error when network constraints fail
      */
-    private fun throwErrorIfNetworkInvalid(): Boolean {
+    internal fun throwErrorIfNetworkInvalid(): Boolean {
         if (worker.jobErrorIfNetworkInvalid(this)) {
             //todo save model to a file here
             return true
@@ -296,19 +296,8 @@ class SyftJob internal constructor(
             Log.d(TAG, "job $jobId already disposed")
     }
 
-    /**
-     * A uniquer identifier class for the job
-     * @property modelName The name of the model used in the job while querying PyGrid
-     * @property version The model version in PyGrid
-     */
+
     data class JobID(val modelName: String, val version: String? = null) {
-        /**
-         * Check if two [JobID] are same. Matches both model names and version if [version] is not null for param and current jobId.
-         * @param modelName the modelName of the jobId which has to be compared with the current object
-         * @param version the version of the jobID which ahs to be compared with the current jobId
-         * @return true if JobId match
-         * @return false otherwise
-         */
         fun matchWithResponse(modelName: String, version: String? = null) =
                 if (version.isNullOrEmpty() || this.version.isNullOrEmpty())
                     this.modelName == modelName
@@ -316,7 +305,7 @@ class SyftJob internal constructor(
                     (this.modelName == modelName) && (this.version == version)
     }
 
-    internal enum class CycleStatus {
+    enum class CycleStatus {
         APPLY, REJECT, ACCEPTED
     }
 }

@@ -19,7 +19,7 @@ import org.openmined.syft.networking.requests.ResponseMessageTypes
 private const val TAG = "SocketSerializer"
 
 @Serializable(with = SocketSerializer::class)
-internal data class SocketResponse(
+data class SocketResponse(
     @SerialName("type")
     val typesResponse: ResponseMessageTypes,
     val data: NetworkModels
